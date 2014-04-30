@@ -7,7 +7,7 @@
 # < 10, show 10 letters.
 # 10 < x <= 20 show 20 letters.
 # 10 to a row so it's not scrunched.
-# Maybe make 20 letters the limit.
+# Maybe make 20 characters the limit.
 # Spaces allowable, not tiles though. Spaces
 # appear as gaps in fillable slots.
 
@@ -26,23 +26,25 @@ class Jumblaya:
 		jumble_num = 0
 		new_num = 0
 		jumble_arr = []
-		if self.letter_num(word) > 1 & self.letter_num(word) < 10:
+		if self.count_letters(word) > 1 & self.count_letters(word) < 10:
 			jumble_num = 10
-		elif self.letter_num(word) > 10 & self.letter_num(word) <= 20:
+		elif self.count_letters(word) > 10 & self.count_letters(word) <= 20:
 			jumble_num = 20
-		new_num = jumble_num - self.letter_num(word)
+		new_num = jumble_num - self.count_letters(word)
 		for i in range(new_num):
 			word = word + self.random_letter()
 		jumble_arr = list(word)
 		r.shuffle(jumble_arr)
 		return jumble_arr
 		
-	def letter_num(self, word):
-		non_space = 0
-		for i in range(len(word)):
-			if word[i] != ' ':
-				non_space += 1
-		return non_space
+	def count_letters(self, answer):
+		non_letters = 0
+		answer = answer.lower()
+		letters = 'abcdefghijklmnopqrstuvwxyz'
+		for i in range(len(answer)):
+			if not(letters.contains(answer[i])):
+				non_letters += 1
+		return len(answer) - non_letters
 		
 	def random_letter(self):
 		letters = 'abcdefghijklmnopqrstuvwxyz'
