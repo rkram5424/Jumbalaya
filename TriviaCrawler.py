@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-import urllib
+import urllib2
 
 class TriviaCrawler:
 	cat_array = ['ArtLiterature','Geography','Entertainment','History','ScienceNature','Misc']
@@ -15,26 +15,31 @@ class TriviaCrawler:
 	
 	def crawl(self):
 		for i in range(6):
-			response = urllib.urlopen(self.root_url + self.num_ret_array[i])
+			response = urllib2.urlopen(self.root_url + self.num_ret_array[i])
 			page_source = response.read()
+			response.close()
 			self.cat_nums[i] = self.extract_between(page_source,'There are <b>','</b> questions', 1)
 			self.cat_nums[i] = int(self.cat_nums[i])
 			f = open(self.cat_array[i] + '.txt', 'w')
 			for j in range(self.cat_nums[i]):
 				question = ""
 				answer = ""
-				response = urllib.urlopen(self.root_url + self.add_array[i] + str(j))
-				page_source = response.read()
-				question = self.extract_between(page_source,'<td align="left">','</td>',1)
-				answer = self.extract_between(page_source,'<td align="left">','</td>',2)
-				question = question.strip()
-				answer = answer.strip()
-				answer = self.refine_answer(answer)
-				answer = answer.upper()
-				if question != '' and answer != '':
-					print(question)
-					print(answer)
-					f.writelines(question + '|' + answer + '\n')
+				try:
+					response = urllib2.urlopen(self.root_url + self.add_array[i] + str(j),timeout=5)
+					page_source = response.read()
+					response.close()
+					question = self.extract_between(page_source,'<td align="left">','</td>',1)
+					answer = self.extract_between(page_source,'<td align="left">','</td>',2)
+					question = question.strip()
+					answer = answer.strip()
+					answer = self.refine_answer(answer)
+					answer = answer.upper()
+					if question != '' and answer != '':
+						print(question)
+						print(answer)
+						f.writelines(question + '|' + answer + '\n')
+				except:
+					continue
 			f.close()
 	
 	def refine_answer(self, answer):
@@ -44,6 +49,8 @@ class TriviaCrawler:
 			return ''
 		if self.count_letters(answer) < 4:
 			return ''
+		if answer[-2:] == '\'s':
+			answer = answer[:-2]
 		return answer
 		
 	def count_letters(self, answer):
