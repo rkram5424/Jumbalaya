@@ -108,7 +108,7 @@ class Jumblaya():
 		afile = afile + ".txt"
 		line = next(afile)
 		for num, aline in enumerate(afile):
-		if r.randrange(num + 2): continue
+			if r.randrange(num + 2): continue
 			line = aline
 		return line
 
