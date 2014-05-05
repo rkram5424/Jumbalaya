@@ -62,8 +62,16 @@ class JumblayaApp(App):
 		return sm
 
 class Jumblaya():
-	def __init__(self): 
-		word = sys.argv[1]
+	#Bowl constants for filenames
+	art = "ArtLiterature"
+	ent = "Entertainment"
+	geo = "Geography"
+	his = "History"
+	sci = "ScienceNature"
+	msc = "Misc"
+	
+	def __init__(self, bowl): 
+		hint, word = self.random_line(bowl).split('|')
 		word = word.lower()
 		print (self.jumble_letters(word))
 		
@@ -95,6 +103,14 @@ class Jumblaya():
 	def random_letter(self):
 		letters = 'abcdefghijklmnopqrstuvwxyz'
 		return r.choice(letters)
+		
+	def random_line(afile):
+		afile = afile + ".txt"
+		line = next(afile)
+		for num, aline in enumerate(afile):
+		if r.randrange(num + 2): continue
+			line = aline
+		return line
 
 if __name__ == '__main__':
     JumblayaApp().run()
