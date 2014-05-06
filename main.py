@@ -14,9 +14,15 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 # property manager that gives you the instance of the ScreenManager used.
 Builder.load_string("""
 <JumblayaMenu>:
+	AsyncImage:
+		source: 'bg1.png'
+		pos_hint: {'center_x': .5, 'center_y': .5}
+		size: 
+		
 	BoxLayout:
 		orientation: 'vertical'
-		padding: 50
+		padding: 200
+		spacing: 100
 		Button:
 			text: 'New Bowl'
 			on_press: root.manager.current = 'bowls'
@@ -24,6 +30,9 @@ Builder.load_string("""
 			text: 'Quit'
 
 <BowlScreen>:
+	AsyncImage:
+		source: 'bg1.png'
+		pos_hint: {'center_x': .5, 'center_y': .5}
 	BoxLayout:
 		orientation: 'vertical'
 		padding: 50
