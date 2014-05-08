@@ -1,0 +1,40 @@
+#:kivy 1.8.0
+
+<JumblayaMenu>:
+	AsyncImage:
+		source: 'bg1.png'
+		pos_hint: {'center_x': .5, 'center_y': .5}
+		size: 
+		
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 200
+		spacing: 100
+		Button:
+			text: 'New Bowl'
+			on_press: root.manager.current = 'bowls'
+		Button:
+			text: 'Quit'
+
+<BowlScreen>:
+	AsyncImage:
+		source: 'bg1.png'
+		pos_hint: {'center_x': .5, 'center_y': .5}
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		Button:
+			text: 'Art & Literature'
+		Button:
+			text: 'Entertainment'
+		Button:
+			text: 'Geography'
+		Button:
+			text: 'History'
+		Button:
+			text: 'Science & Nature'
+		Button:
+			text: 'Misc'
+		Button:
+			text: 'Back to menu'
+			on_press: root.manager.current = 'menu's

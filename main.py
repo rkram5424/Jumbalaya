@@ -4,122 +4,86 @@
 #imports
 import random as r
 import sys
+import kivy
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+import Jumblaya
 
-# Create both screens. Please note the root.manager.current: this is how
-# you can control the ScreenManager from kv. Each screen has by default a
-# property manager that gives you the instance of the ScreenManager used.
 Builder.load_string("""
 <JumblayaMenu>:
-	AsyncImage:
-		source: 'bg1.png'
-		pos_hint: {'center_x': .5, 'center_y': .5}
-		size: 
-		
 	BoxLayout:
 		orientation: 'vertical'
 		padding: 200
-		spacing: 100
+		spacing: 50
 		Button:
 			text: 'New Bowl'
 			on_press: root.manager.current = 'bowls'
+			width: 50
 		Button:
 			text: 'Quit'
+		Button:
+			text: 'About'
 
 <BowlScreen>:
-	AsyncImage:
-		source: 'bg1.png'
-		pos_hint: {'center_x': .5, 'center_y': .5}
 	BoxLayout:
 		orientation: 'vertical'
 		padding: 50
 		Button:
 			text: 'Art & Literature'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'ArtLiterature'
 		Button:
 			text: 'Entertainment'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Entertainment'
 		Button:
 			text: 'Geography'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Geography'
 		Button:
 			text: 'History'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'History'
 		Button:
 			text: 'Science & Nature'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'ScienceNature'
 		Button:
 			text: 'Misc'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Misc'
 		Button:
 			text: 'Back to menu'
 			on_press: root.manager.current = 'menu'
+
+<GameScreen>:
+	FloatLayout:
+		Label:
+			text: root.hint
+
 """)
 
-# Declare both screens
 class JumblayaMenu(Screen):
 	pass
 
 class BowlScreen(Screen):
     pass
 
-
-# Create the screen manager
-sm = ScreenManager()
-sm.add_widget(JumblayaMenu(name='menu'))
-sm.add_widget(BowlScreen(name='bowls'))
+class GameScreen(Screen):
+	jb = Jumblaya.Jumblaya('ArtLiterature') # How to set the param dynamically...
+	hint = jb.return_data()[0]
+	word = jb.return_data()[1]
+	jumble = jb.return_data()[2]
 
 class JumblayaApp(App):
 	def build(self):
+		sm = ScreenManager()
+		sm.add_widget(JumblayaMenu(name='menu'))
+		sm.add_widget(BowlScreen(name='bowls'))
+		sm.add_widget(GameScreen(name='game'))
 		return sm
-
-class Jumblaya():
-	#Bowl constants for filenames
-	art = "ArtLiterature"
-	ent = "Entertainment"
-	geo = "Geography"
-	his = "History"
-	sci = "ScienceNature"
-	msc = "Misc"
 	
-	def __init__(self, bowl): 
-		hint, word = self.random_line(bowl).split('|')
-		word = word.lower()
-		print (self.jumble_letters(word))
-		
-	def jumble_letters(self, word): # takes in word and spits out a jumbled mess.
-		word = word.replace(' ', '')
-		jumble_num = 0
-		new_num = 0
-		jumble_arr = []
-		if self.count_letters(word) > 1 & self.count_letters(word) < 10:
-			jumble_num = 10
-		elif self.count_letters(word) > 10 & self.count_letters(word) <= 20:
-			jumble_num = 20
-		new_num = jumble_num - self.count_letters(word)
-		for i in range(new_num):
-			word = word + self.random_letter()
-		jumble_arr = list(word)
-		r.shuffle(jumble_arr)
-		return jumble_arr
-		
-	def count_letters(self, answer):
-		non_letters = 0
-		answer = answer.lower()
-		letters = 'abcdefghijklmnopqrstuvwxyz'
-		for i in range(len(answer)):
-			if not(letters.contains(answer[i])):
-				non_letters += 1
-		return len(answer) - non_letters
-		
-	def random_letter(self):
-		letters = 'abcdefghijklmnopqrstuvwxyz'
-		return r.choice(letters)
-		
-	def random_line(afile):
-		afile = afile + ".txt"
-		line = next(afile)
-		for num, aline in enumerate(afile):
-			if r.randrange(num + 2): continue
-			line = aline
-		return line
-
 if __name__ == '__main__':
     JumblayaApp().run()

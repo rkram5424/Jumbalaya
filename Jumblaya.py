@@ -16,10 +16,17 @@ import random as r
 import sys
 
 class Jumblaya:
-	def __init__(self):
-		word = sys.argv[1]
+
+	jb = ['','','']
+
+	def __init__(self, bowl):
+		hint, word = self.random_line(bowl).split('|')
 		word = word.lower()
-		print (self.jumble_letters(word))
+		self.jb = [hint, word, self.jumble_letters(word)]
+		self.return_data()
+
+	def return_data(self):
+		return self.jb
 		
 	def jumble_letters(self, word): # takes in word and spits out a jumbled mess.
 		word = word.replace(' ', '')
@@ -42,13 +49,16 @@ class Jumblaya:
 		answer = answer.lower()
 		letters = 'abcdefghijklmnopqrstuvwxyz'
 		for i in range(len(answer)):
-			if not(letters.contains(answer[i])):
+			if not answer[i] in letters:
 				non_letters += 1
 		return len(answer) - non_letters
 		
 	def random_letter(self):
 		letters = 'abcdefghijklmnopqrstuvwxyz'
 		return r.choice(letters)
+		
+	def random_line(self, afile):
+		return r.choice(list(open(afile + '.txt')))
 
 if __name__ == '__main__':
 	Jumblaya()
