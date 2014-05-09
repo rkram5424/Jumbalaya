@@ -1,0 +1,48 @@
+#:kivy 1.8.0
+
+<JumblayaMenu>:
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 200
+		spacing: 50
+		Button:
+			text: 'New Bowl'
+			on_press: root.manager.current = 'bowls'
+			width: 50
+		Button:
+			text: 'Quit'
+		Button:
+			text: 'About'
+
+<BowlScreen>:
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		Button:
+			text: 'Art & Literature'
+			on_press: root.art()
+			on_press: root.manager.current = 'game'
+		Button:
+			text: 'Entertainment'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Entertainment'
+		Button:
+			text: 'Geography'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Geography'
+		Button:
+			text: 'History'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'History'
+		Button:
+			text: 'Science & Nature'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'ScienceNature'
+		Button:
+			text: 'Misc'
+			on_press: root.manager.current = 'game'
+			on_press: root.bowl = 'Misc'
+		Button:
+			text: 'Back to menu'
+			on_press: root.manager.current = 'menu'
+
