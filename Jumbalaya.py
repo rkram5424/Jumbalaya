@@ -15,7 +15,7 @@
 import random as r
 import sys
 
-class Jumblaya:
+class Jumbalaya:
 
 	jb = ['','','']
 
@@ -61,5 +61,5 @@ class Jumblaya:
 		return r.choice(list(open(afile + '.txt')))
 
 if __name__ == '__main__':
-	Jumblaya()
+	Jumbalaya()
 

@@ -10,9 +10,11 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
-import Jumblaya
+from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
+	ListProperty
+import Jumbalaya
 
-class JumblayaMenu(Screen):
+class JumbalayaMenu(Screen):
 	pass
 
 class BowlScreen(Screen):
@@ -36,18 +38,35 @@ class BowlScreen(Screen):
 		gs.set_bowl('Misc')
 
 class GameScreen(Screen):
-	hint = ""
+	bowl = StringProperty()
+	hint = StringProperty()
+	word = StringProperty()
+	jumble = ListProperty()
+	j_rows = NumericProperty()
 	def set_bowl(self, bowl):
-		jb = Jumblaya.Jumblaya(bowl)
+		jb = Jumbalaya.Jumbalaya(bowl)
+		self.bowl = self.display_bowl(bowl)
 		self.hint = jb.return_data()[0]
-		l = Label(text=self.hint)
-		self.add_widget(l)
+		self.word = jb.return_data()[1]
+		self.jumble = jb.return_data()[2]
+		if len(self.jumble) == 10:
+			self.j_rows = 1
+		else:
+			self.j_rows = 2
+
+	def load_tiles(self):
+		pass
+
+	def display_bowl(self, bowl):
+		bowl = bowl.replace('ArtLiterature','Art & Literature')
+		bowl = bowl.replace('ScienceNature','Science & Nature')
+		bowl = bowl.replace('Misc','Miscellaneous')
+		return bowl
 
 Builder.load_string("""
-
 #:kivy 1.8.0
 
-<JumblayaMenu>:
+<JumbalayaMenu>:
 	BoxLayout:
 		orientation: 'vertical'
 		padding: 200
@@ -92,16 +111,39 @@ Builder.load_string("""
 		Button:
 			text: 'Back to menu'
 			on_press: root.manager.current = 'menu'
+
+<GameScreen>:
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			padding: 50
+			orientation: 'horizontal'
+			Button:
+				text: 'Back'
+				on_press: root.manager.current = 'bowls'
+			Label:
+				text: root.bowl
+			Button:
+				text: 'Next'
+				on_press: root.manager.current = 'game'
+		Label:
+			text: root.hint
+		GridLayout:
+			cols: 15
+			rows: 2
+		GridLayout:
+			cols: 10
+			rows: root.j_rows
 """)
 
 sm = ScreenManager()
-sm.add_widget(JumblayaMenu(name='menu'))
+sm.add_widget(JumbalayaMenu(name='menu'))
 sm.add_widget(BowlScreen(name='bowls'))
 sm.add_widget(GameScreen(name='game'))
 
-class JumblayaApp(App):
+class JumbalayaApp(App):
 	def build(self):
 		return sm
 	
 if __name__ == '__main__':
-    JumblayaApp().run()
+	JumbalayaApp().run()
