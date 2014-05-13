@@ -175,7 +175,8 @@ Builder.load_string("""
 			source: 'Art/Title.png'
 		BoxLayout:
 			orientation: 'vertical'
-			padding: [300,20]
+			size_hint:(.4,1)
+			pos: (1, .5)
 			Button:
 				background_normal: 'Art/Buttons/new_bowl.png'
 				allow_stretch: False
@@ -229,6 +230,7 @@ Builder.load_string("""
 	BoxLayout:
 		orientation: 'vertical'
 		BoxLayout:
+			size_hint:(1, 0.3)
 			##padding: 50
 			orientation: 'horizontal'
 			Button:
