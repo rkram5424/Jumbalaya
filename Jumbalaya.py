@@ -30,31 +30,36 @@ class Jumbalaya:
 		
 	def jumble_letters(self, word): # takes in word and spits out a jumbled mess.
 		word = word.replace(' ', '')
+		word = word.replace('\n', '')
 		jumble_num = 0
 		new_num = 0
 		jumble_arr = []
-		if self.count_letters(word) > 1 & self.count_letters(word) < 10:
+		letter_count = self.count_letters(word)
+		print(letter_count)
+		if (letter_count > 1 and letter_count <= 10):
 			jumble_num = 10
-		elif self.count_letters(word) > 10 & self.count_letters(word) <= 20:
+		else:
 			jumble_num = 20
-		new_num = jumble_num - self.count_letters(word)
+		new_num = jumble_num - letter_count
+		print(new_num)
 		for i in range(new_num):
 			word = word + self.random_letter()
 		jumble_arr = list(word)
 		r.shuffle(jumble_arr)
+		print(jumble_arr)
 		return jumble_arr
 		
 	def count_letters(self, answer):
 		non_letters = 0
-		answer = answer.lower()
-		letters = 'abcdefghijklmnopqrstuvwxyz'
+		answer = answer.upper()
+		letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		for i in range(len(answer)):
 			if not answer[i] in letters:
 				non_letters += 1
 		return len(answer) - non_letters
 		
 	def random_letter(self):
-		letters = 'abcdefghijklmnopqrstuvwxyz'
+		letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		return r.choice(letters)
 		
 	def random_line(self, afile):
