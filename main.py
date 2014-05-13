@@ -175,15 +175,15 @@ Builder.load_string("""
 			source: 'Art/Title.png'
 		BoxLayout:
 			orientation: 'vertical'
-			padding: 50
+			padding: [300,20]
 			Button:
-				text: 'New Bowl'
+				background_normal: 'Art/Buttons/new_bowl.png'
+				allow_stretch: False
 				on_press: root.manager.current = 'bowls'
-				width: 50
 			Button:
-				text: 'About'
+				background_normal: 'Art/Buttons/about.png'
 			Button:
-				text: 'Quit'
+				background_normal: 'Art/Buttons/quit.png'
 
 <BowlScreen>:
 	canvas:
