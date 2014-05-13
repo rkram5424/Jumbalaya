@@ -21,7 +21,7 @@ class Jumbalaya:
 
 	def __init__(self, bowl):
 		hint, word = self.random_line(bowl).split('|')
-		word = word.lower()
+		word = word.upper()
 		self.jb = [hint, word, self.jumble_letters(word)]
 		self.return_data()
 

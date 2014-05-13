@@ -11,6 +11,7 @@ from kivy.graphics import Color
 from kivy.graphics import Rectangle
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -118,7 +119,17 @@ class GameScreen(Screen):
 			self.j_rows = 1
 		else:
 			self.j_rows = 2
+		self.load_slots()
 		self.load_jumble()
+
+	def load_slots(self):
+		for letter in self.word:
+			let_lab = Label
+			let_lab.text = letter
+			if not letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+				self.ids.slot_grid.add_widget(Label(text=letter, font_size=24))
+			else:
+				self.ids.slot_grid.add_widget(Image(source='Art/Tiles/slot.png'))
 
 	def load_jumble(self):
 		for letter in range(1):#self.jumble:
@@ -143,69 +154,99 @@ class GameScreen(Screen):
 Builder.load_string("""
 #:kivy 1.8.0
 
+<Jumbalaya>:
+	canvas:
+		Color:
+			rgb: 0, 1, 1
+		Rectangle:
+			source: 'Art/bg1.png'
+			size: self.size
+
 <JumbalayaMenu>:
+	canvas:
+		Color:
+			rgb: 0, 1, 1
+		Rectangle:
+			source: 'Art/bg1.png'
+			size: self.size
 	BoxLayout:
 		orientation: 'vertical'
-		padding: 200
-		spacing: 50
-		Button:
-			text: 'New Bowl'
-			on_press: root.manager.current = 'bowls'
-			width: 50
-		Button:
-			text: 'Quit'
-		Button:
-			text: 'About'
+		Image:
+			source: 'Art/Title.png'
+		BoxLayout:
+			orientation: 'vertical'
+			size_hint:(.4,1)
+			pos: (1, .5)
+			Button:
+				background_normal: 'Art/Buttons/new_bowl.png'
+				allow_stretch: False
+				on_press: root.manager.current = 'bowls'
+			Button:
+				background_normal: 'Art/Buttons/about.png'
+			Button:
+				background_normal: 'Art/Buttons/quit.png'
 
 <BowlScreen>:
+	canvas:
+		Color:
+			rgb: 0, 1, 1
+		Rectangle:
+			source: 'Art/bg1.png'
+			size: self.size
+
 	BoxLayout:
 		orientation: 'vertical'
 		padding: 50
 		Button:
 			text: 'Art & Literature'
-			on_press: root.manager.current = 'game'
-			on_release: root.art()
+			on_press: root.manager.current = 'game'; root.art()
 		Button:
 			text: 'Entertainment'
-			on_press: root.manager.current = 'game'
-			on_release: root.ent()
+			on_press: root.manager.current = 'game'; root.ent()
 		Button:
 			text: 'Geography'
-			on_press: root.manager.current = 'game'
-			on_release: root.geo()
+			on_press: root.manager.current = 'game'; root.geo()
 		Button:
 			text: 'History'
-			on_press: root.manager.current = 'game'
-			on_release: root.his()
+			on_press: root.manager.current = 'game'; root.his()
 		Button:
 			text: 'Science & Nature'
-			on_press: root.manager.current = 'game'
-			on_release: root.sci()
+			on_press: root.manager.current = 'game'; root.sci()
 		Button:
 			text: 'Misc'
-			on_press: root.manager.current = 'game'
-			on_release: root.msc()
+			on_press: root.manager.current = 'game'; root.msc()
 		Button:
 			text: 'Back to menu'
 			on_press: root.manager.current = 'menu'
 
 <GameScreen>:
+	canvas:
+		Color:
+			rgb: 0, 1, 1
+		Rectangle:
+			source: 'Art/bg1.png'
+			size: self.size
+
 	BoxLayout:
 		orientation: 'vertical'
 		BoxLayout:
-			padding: 50
+			size_hint:(1, 0.3)
+			##padding: 50
 			orientation: 'horizontal'
 			Button:
 				text: 'Back'
 				on_press: root.manager.current = 'bowls'
 			Label:
+				font_size: 24
 				text: root.bowl
 			Button:
 				text: 'Skip'
 				on_press: root.manager.current = 'game'
 		Label:
 			text: root.hint
+			font_size: 24
 		GridLayout:
+			id: slot_grid
 			cols: 15
 			rows: 2
 		BoxLayout:
