@@ -6,6 +6,7 @@ import random as r
 import sys
 import kivy
 from kivy.app import App
+from kivy.event import EventDispatcher
 from kivy.graphics import Color
 from kivy.graphics import Rectangle
 from kivy.uix.button import Button
@@ -41,12 +42,18 @@ class BowlScreen(Screen):
 		gs = sm.current_screen
 		gs.set_bowl('Misc')
 
+class TileButton(Button):
+	coords = ListProperty([0, 0])
+
 class GameScreen(Screen):
 	bowl = StringProperty()
 	hint = StringProperty()
 	word = StringProperty()
 	jumble = ListProperty()
 	j_rows = NumericProperty()
+	jumble_y_hint = NumericProperty()
+	tile_selected = BooleanProperty()
+	letter_selected = StringProperty()
 
 	def set_bowl(self, bowl):
 		jb = Jumbalaya.Jumbalaya(bowl)
@@ -56,8 +63,10 @@ class GameScreen(Screen):
 		self.jumble = jb.return_data()[2]
 		if len(self.jumble) == 10:
 			self.j_rows = 1
+			self.jumble_y_hint = 0.4
 		else:
 			self.j_rows = 2
+			self.jumble_y_hint = 1
 		self.load_slots()
 		self.load_jumble()
 
@@ -65,20 +74,29 @@ class GameScreen(Screen):
 		for letter in self.word:
 			let_lab = Label
 			let_lab.text = letter
+			slot_button = Button(background_normal=('Art/Tiles/slot.png'))
 			if not letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
 				self.ids.slot_grid.add_widget(Label(text=letter, font_size=24))
 			else:
-				self.ids.slot_grid.add_widget(Image(source='Art/Tiles/slot.png'))
+				self.ids.slot_grid.add_widget(slot_button)
 
 	def load_jumble(self):
 		for letter in self.jumble:
-			self.ids.jumble_grid.add_widget(Button(background_normal='Art/Tiles/' + letter + '.png'))
+			tile_button = Button(background_normal=('Art/Tiles/' + letter + '.png'))
+			tile_button.bind(on_press = self.tile_pressed())
+			self.ids.jumble_grid.add_widget(tile_button)
 
 	def update_jumble(self):
 		pass
 
-	def load_tiles(self):
-		pass
+	def tile_pressed(self):
+		self.tile_selected = True
+		print('button pressed')
+
+
+	def slot_pressed(self):
+		if self.tile_selected:
+			pass
 
 	def display_bowl(self, bowl):
 		bowl = bowl.replace('ArtLiterature','Art & Literature')
@@ -99,8 +117,6 @@ Builder.load_string("""
 
 <JumbalayaMenu>:
 	canvas:
-		Color:
-			rgb: 0, 1, 1
 		Rectangle:
 			source: 'Art/bg1.png'
 			size: self.size
@@ -111,21 +127,18 @@ Builder.load_string("""
 		BoxLayout:
 			orientation: 'vertical'
 			size_hint:(.4,1)
-			AnchorLayout:
-				anchor_x 'center'
-				Button:
-					background_normal: 'Art/Buttons/new_bowl.png'
-					allow_stretch: False
-					on_press: root.manager.current = 'bowls'
-				##Button:
-				##	background_normal: 'Art/Buttons/about.png'
-				##Button:
-				##	background_normal: 'Art/Buttons/quit.png'
+			Button:
+				background_normal: 'Art/Buttons/new_bowl.png'
+				allow_stretch: False
+				on_press: root.manager.current = 'bowls'
+			Button:
+				background_normal: 'Art/Buttons/about.png'
+			Button:
+				background_normal: 'Art/Buttons/quit.png'
+				on_press: exit()
 
 <BowlScreen>:
 	canvas:
-		Color:
-			rgb: 0, 1, 1
 		Rectangle:
 			source: 'Art/bg1.png'
 			size: self.size
@@ -157,8 +170,6 @@ Builder.load_string("""
 
 <GameScreen>:
 	canvas:
-		Color:
-			rgb: 0, 1, 1
 		Rectangle:
 			source: 'Art/bg1.png'
 			size: self.size
@@ -171,12 +182,12 @@ Builder.load_string("""
 			orientation: 'horizontal'
 			Button:
 				text: 'Back'
-				on_press: root.manager.current = 'bowls'
+				on_press: root.clear_widgets();root.manager.current = 'bowls'
 			Label:
 				font_size: 24
 				text: root.bowl
 			Button:
-				text: 'Skip'
+				text: 'Give Up'
 				on_press: root.manager.current = 'game'
 		Label:
 			text: root.hint
@@ -185,10 +196,12 @@ Builder.load_string("""
 			id: slot_grid
 			cols: 15
 			rows: 2
+			minimum_width: 34
 		GridLayout:
 			id: jumble_grid
 			cols: 10
 			rows: root.j_rows
+			size_hint:(1,root.jumble_y_hint)
 			
 """)
 
