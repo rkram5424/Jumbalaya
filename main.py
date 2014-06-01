@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 #imports
 import random as r
 import sys
@@ -14,7 +11,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
 	ListProperty, ObjectProperty
 import Jumbalaya
@@ -106,7 +103,6 @@ class GameScreen(Screen):
 
 Builder.load_string("""
 #:kivy 1.8.0
-
 <Jumbalaya>:
 	canvas:
 		Color:
@@ -125,17 +121,27 @@ Builder.load_string("""
 		Image:
 			source: 'Art/Title.png'
 		BoxLayout:
+			spacing: 20
 			orientation: 'vertical'
-			size_hint:(.4,1)
-			Button:
-				background_normal: 'Art/Buttons/new_bowl.png'
-				allow_stretch: False
-				on_press: root.manager.current = 'bowls'
-			Button:
-				background_normal: 'Art/Buttons/about.png'
-			Button:
-				background_normal: 'Art/Buttons/quit.png'
-				on_press: exit()
+			BoxLayout:
+				Label:
+				Button:
+					background_normal: 'Art/Buttons/new_bowl.png'
+					on_press: root.manager.current = 'bowls'
+				Label:
+			BoxLayout:
+				Label:
+				Button:
+					background_normal: 'Art/Buttons/about.png'
+				Label:
+			BoxLayout:
+				Label:
+				Button:
+					background_normal: 'Art/Buttons/quit.png'
+					on_press: exit()
+				Label:
+		Label:
+			size_hint_y: 0.2
 
 <BowlScreen>:
 	canvas:
@@ -201,11 +207,10 @@ Builder.load_string("""
 			id: jumble_grid
 			cols: 10
 			rows: root.j_rows
-			size_hint:(1,root.jumble_y_hint)
-			
+			size_hint:(1,root.jumble_y_hint)			
 """)
 
-sm = ScreenManager()
+sm = ScreenManager(transition = FadeTransition())
 sm.add_widget(JumbalayaMenu(name='menu'))
 sm.add_widget(BowlScreen(name='bowls'))
 sm.add_widget(GameScreen(name='game'))
