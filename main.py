@@ -7,6 +7,7 @@ from kivy.event import EventDispatcher
 from kivy.graphics import Color
 from kivy.graphics import Rectangle
 from kivy.uix.button import Button
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
@@ -39,9 +40,6 @@ class BowlScreen(Screen):
 		gs = sm.current_screen
 		gs.set_bowl('Misc')
 
-class TileButton(Button):
-	coords = ListProperty([0, 0])
-
 class GameScreen(Screen):
 	bowl = StringProperty()
 	hint = StringProperty()
@@ -68,20 +66,24 @@ class GameScreen(Screen):
 		self.load_jumble()
 
 	def load_slots(self):
+		remainder = 20 - len(self.word)
 		for letter in self.word:
-			let_lab = Label
-			let_lab.text = letter
-			slot_button = Button(background_normal=('Art/Tiles/slot.png'))
+			slot_button = Button(background_normal=('Art/Tiles/slot.png'), background_down=('Art/Tiles/slot.png'))
 			if not letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
 				self.ids.slot_grid.add_widget(Label(text=letter, font_size=24))
 			else:
 				self.ids.slot_grid.add_widget(slot_button)
+		for num in range(remainder):
+			self.ids.slot_grid.add_widget(Label(text=''))
 
 	def load_jumble(self):
+		jumble_index = 0
 		for letter in self.jumble:
-			tile_button = Button(background_normal=('Art/Tiles/' + letter + '.png'))
-			tile_button.bind(on_press = self.tile_pressed())
+			tile_button = TileButton(background_normal=('Art/Tiles/' + letter + '.png'), background_down=('Art/Tiles/Selected/' + letter + '.png'))
+			tile_button.letter = letter
+			tile_button.jumble_index = jumble_index
 			self.ids.jumble_grid.add_widget(tile_button)
+			jumble_index += 1
 
 	def update_jumble(self):
 		pass
@@ -100,6 +102,12 @@ class GameScreen(Screen):
 		bowl = bowl.replace('ScienceNature','Science & Nature')
 		bowl = bowl.replace('Misc','Miscellaneous')
 		return bowl
+
+class TileButton(ToggleButton):
+	letter = StringProperty()
+	jumble_index = NumericProperty()
+	def on_press(self):
+		pass
 
 Builder.load_string("""
 #:kivy 1.8.0
@@ -184,7 +192,6 @@ Builder.load_string("""
 		orientation: 'vertical'
 		BoxLayout:
 			size_hint:(1, 0.3)
-			##padding: 50
 			orientation: 'horizontal'
 			Button:
 				text: 'Back'
@@ -196,11 +203,12 @@ Builder.load_string("""
 				text: 'Give Up'
 				on_press: root.manager.current = 'game'
 		Label:
+			multiline: True
 			text: root.hint
 			font_size: 24
 		GridLayout:
 			id: slot_grid
-			cols: 15
+			cols: 10
 			rows: 2
 			minimum_width: 34
 		GridLayout:
